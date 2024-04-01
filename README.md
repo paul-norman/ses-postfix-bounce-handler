@@ -2,6 +2,8 @@
 
 A very simple system to facilitate gaining SES production access for a domain *(i.e. getting out of Sandbox mode)*. Production use isn't granted without bounce / complaint handling and this allows a very basic method of handling SNS topic webhooks that will pass the SES customer service checks.
 
+This system assumes that you are using Postfix and PostfixAdmin to manage a simple mailserver and wish to relay outgoing emails using SES as one of the channels. 
+
 ## Dependencies
 
 This project requires a *PostgreSQL* or *MySQL / MariaDB / Aurora* database in order to run. It also expects [PostfixAdmin](https://github.com/postfixadmin/postfixadmin) to be used and configured.
@@ -341,3 +343,14 @@ In the [SNS dashboard](https://eu-west-2.console.aws.amazon.com/sns/v3/home?regi
 
 Click on each topic in turn and press "Create subscription". Choose HTTPS as the Protocol and enter the relevant endpoint in the box. Press "Create subscription".
 
+Lines for each will appear in the app logs starting with:
+
+```
+ SUBSCRIPTION REQUEST: 
+ ```
+ 
+The logs can easily be tailed with the command:
+
+```
+npm run logs
+```
