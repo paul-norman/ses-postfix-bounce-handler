@@ -158,7 +158,11 @@ export default class SES {
 	}
 
 	async parse() {
-		const post	= this._request.body;
+		let post = this._request.body;
+		if (typeof post === 'string') {
+			post = JSON.parse(post);
+		}
+
 		const valid	= await this.validate(post);
 
 		if (valid) {
