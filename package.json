@@ -1,0 +1,30 @@
+{
+	"name": "SES PostfixAdmin Bounce Handler",
+	"version": "1.0.0",
+	"description": "A very simple bounce handler for AWS SES",
+	"main": "app.js",
+	"type": "module",
+	"directories": {
+		"test": "test"
+	},
+	"scripts": {
+		"start": "pm2 start ses.config.cjs --only ses_web",
+		"prod": "pm2 start ses.config.cjs --only ses_web",
+		"dev": "pm2 start ses.config.cjs",
+		"stop": "pm2 stop ses",
+		"delete": "pm2 delete ses",
+		"logs": "pm2 logs ses"
+	},
+	"keywords": [],
+	"author": "Paul Norman",
+	"license": "ISC",
+	"dependencies": {
+		"dotenv": "^16.4.2",
+		"fastify": "^4.0.0",
+		"@fastify/mysql": "^4.2.0",
+		"@fastify/postgres": "^5.2.2"
+	},
+	"devDependencies": {
+		"pino-pretty": "^10.3.1"
+	}
+}

@@ -125,3 +125,13 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# webstorm
+.idea
+
+# vscode
+.vscode
+*code-workspace
+
+# mac files
+.DS_Store
