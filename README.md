@@ -41,7 +41,7 @@ The following tables should be manually added to the PostfixAdmin database:
 ```sql
 CREATE TABLE IF NOT EXISTS "transport_option"
 (
-	"transport_option_id" serial CONSTRAINT "transport_option_id" PRIMARY KEY,
+	"transport_option_id" serial CONSTRAINT "transport_option_transport_option_id_pk" PRIMARY KEY,
 	"name"                varchar,
 	"description"         varchar
 );
@@ -117,7 +117,7 @@ The following tables should be manually added to **each** domain's database:
 ```sql
 CREATE TABLE IF NOT EXISTS "email_bounce"
 (
-	"message_id" serial CONSTRAINT "message_id" PRIMARY KEY,
+	"message_id" serial CONSTRAINT "email_bounce_message_id_pk" PRIMARY KEY,
 	"date"       timestamp,
 	"service"    varchar,
 	"domain"     varchar,
@@ -136,7 +136,7 @@ CREATE INDEX IF NOT EXISTS "email_bounce_email_idx" ON "email_bounce" ("email");
 
 CREATE TABLE IF NOT EXISTS "email_complaint"
 (
-	"message_id" serial CONSTRAINT "message_id" PRIMARY KEY,
+	"message_id" serial CONSTRAINT "email_complaint_message_id_pk" PRIMARY KEY,
 	"date"       timestamp,
 	"service"    varchar,
 	"domain"     varchar,
@@ -153,7 +153,7 @@ CREATE INDEX IF NOT EXISTS "email_complaint_email_idx" ON "email_complaint" ("em
 
 CREATE TABLE IF NOT EXISTS "email_delivery"
 (
-	"message_id" serial CONSTRAINT "message_id" PRIMARY KEY,
+	"message_id" serial CONSTRAINT "email_delivery_message_id_pk" PRIMARY KEY,
 	"date"       timestamp,
 	"service"    varchar,
 	"domain"     varchar,
