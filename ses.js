@@ -163,19 +163,17 @@ export default class SES {
 			post = JSON.parse(post);
 		}
 
-		const valid	= await this.validate(post);
+		const valid = await this.validate(post);
 
 		if (valid) {
-			if ('Type' in post && post.Type === 'SubscriptionConfirmation') {
+			if (post.Type === 'SubscriptionConfirmation') {
 				this._request.log.info('SUBSCRIPTION REQUEST: ' + post.SubscribeURL);
 				return {};
 			}
 
-			if ('Timestamp' in post && 'Message' in post) {
-				post.Message = JSON.parse(post.Message);
+			post.Message = JSON.parse(post.Message);
 
-				return post;
-			}
+			return post;
 		}
 
 		return {};
@@ -194,14 +192,14 @@ export default class SES {
 		}
 
 		let validationFields = [];
-		if ('Type' in post && (post.Type === 'SubscriptionConfirmation' || post.Type === 'UnsubscribeConfirmation')) {
+		if (post.Type === 'SubscriptionConfirmation' || post.Type === 'UnsubscribeConfirmation') {
 			validationFields = ['Message', 'MessageId', 'SubscribeURL', 'Timestamp', 'Token', 'TopicArn', 'Type'];
 		} else {
 			validationFields = ['Message', 'MessageId', 'Subject', 'Timestamp', 'TopicArn', 'Type'];
 		}
 
 		const response		= await fetch(post.SigningCertURL);
-		const certificate 	= await response.text();
+		const certificate	= await response.text();
 
 		const verify = crypto.createVerify('sha1WithRSAEncryption');
 		for (const validationField of validationFields) {
@@ -216,7 +214,7 @@ export default class SES {
 
 	response(data) {
 		const def = {
-			status: 	200,
+			status:		200,
 			message:	'ok',
 		};
 

@@ -12,23 +12,51 @@ This project requires a *PostgreSQL* or *MySQL / MariaDB / Aurora* database in o
 
 Install [Node.js](https://nodejs.org/en/download) and [PM2](https://pm2.io/) (globally) to manage the application:
  
-`npm i pm2 -g`
+```console
+npm i pm2 -g
+```
+
+Get the code:
+
+```console
+cd /var/www
+sudo git clone https://github.com/paul-norman/ses-postfix-bounce-handler.git
+```
 
 Install the project dependencies:
 
-`npm i`
+```console
+npm i
+```
 
 Create a `.env` file *(starting from the `.env-sample`)* file and place it in the project root. Ensure that database details are configured. Any number of domains may be added, but the PostfixAdmin database must be configured, along with database credentials for each other domain used *(they may all be the same)* - see the SQL queries below.
 
 To start the application in dev mode:
 
-`npm run dev`
+```console
+npm run dev
+```
 
 Or to start in production mode:
 
-`npm start`
+```console
+npm start
+```
 
 Open [http://localhost:4010](http://localhost:4010) to view it in the browser.
+
+It's better to use PM2 to make this system more resilient *(example for Ubuntu)*:
+
+```console
+pm2 startup
+sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u ubuntu --hp /home/ubuntu
+systemctl status pm2-ubuntu
+sudo systemctl enable pm2-ubuntu
+
+cd /path/to/files
+pm2 start ses.config.cjs --only ses_web
+pm2 save
+```
 
 ## Additional Tables Required
 
@@ -234,7 +262,7 @@ You will need two additional files *(your locations may vary!)*:
 
 ### PostgreSQL
 
-```sh
+```console
 sudo nano /etc/postfix/sql/transport_maps_email.cf
 ```
 
@@ -246,7 +274,7 @@ dbname   = postfixadmin_database_name
 query    = SELECT name AS transport FROM transport_maps INNER JOIN transport_option ON transport_option.transport_option_id = transport_maps.transport_option_id WHERE username = '%s' AND domain = '%d' AND active = true LIMIT 1
 ```
 
-```sh
+```console
 sudo nano /etc/postfix/sql/transport_maps_domain.cf
 ```
 
@@ -260,7 +288,7 @@ query    = SELECT name AS transport FROM transport_maps INNER JOIN transport_opt
 
 Add these to the main Postfix config file:
 
-```sh
+```console
 sudo nano /etc/postfix/main.cf
 ```
 
@@ -274,7 +302,7 @@ transport_maps = hash:/etc/postfix/transport,
 
 Almost identical to the PostgreSQL version, but not quite...
 
-```sh
+```console
 sudo nano /etc/postfix/sql/transport_maps_email.cf
 ```
 
@@ -286,7 +314,7 @@ dbname   = postfixadmin_database_name
 query    = SELECT name AS transport FROM transport_maps INNER JOIN transport_option ON transport_option.transport_option_id = transport_maps.transport_option_id WHERE username = '%s' AND domain = '%d' AND active = 1 LIMIT 1
 ```
 
-```sh
+```console
 sudo nano /etc/postfix/sql/transport_maps_domain.cf
 ```
 
@@ -300,7 +328,7 @@ query    = SELECT name AS transport FROM transport_maps INNER JOIN transport_opt
 
 Add these to the main Postfix config file:
 
-```sh
+```console
 sudo nano /etc/postfix/main.cf
 ```
 
@@ -318,9 +346,11 @@ It is assumed that you will use a secure, reverse proxy to make this service pub
 
 You will have 3 POST endpoints for this service:
 
- - https://ses.mydomain.com/bounces/
- - https://ses.mydomain.com/complaints/
- - https://ses.mydomain.com/deliveries/
+```
+https://ses.mydomain.com/bounce/
+https://ses.mydomain.com/complaint/
+https://ses.mydomain.com/delivery/
+```
  
 SES is regional, so for this guide I'm going to assume my home region of London (`eu-west-2`), but you should use the one where you will be sending from.
 
@@ -351,6 +381,8 @@ Lines for each will appear in the app logs starting with:
  
 The logs can easily be tailed with the command:
 
-```
+```console
 npm run logs
 ```
+
+Copy and paste the subscription URLs into a browser to confirm the subscription.
