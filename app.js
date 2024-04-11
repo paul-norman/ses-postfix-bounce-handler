@@ -28,7 +28,8 @@ const loggerConfig = {
 
 // Global config options
 const fastify = Fastify({
-	logger: loggerConfig[process.env.NODE_ENV] ?? true
+	logger:		loggerConfig[process.env.NODE_ENV] ?? true,
+	trustProxy:	process.env.NODE_ENV === 'production',
 });
 
 const databases = [];
