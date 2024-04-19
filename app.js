@@ -70,9 +70,9 @@ while (found) {
 
 for (const database of databases) {
 	const name = ('domain' in database) ? database.domain : 'postfix';
-	
+
 	if (database.type === 'postgres') {
-		fastify.register(postgres, {
+		await fastify.register(postgres, {
 			name,
 			host:		database.host,
 			user:		database.user,
@@ -81,7 +81,7 @@ for (const database of databases) {
 			database:	database.name,
 		});
 	} else if (database.type === 'mysql' || database.type.startsWith('maria') || database.type.startsWith('aurora')) {
-		fastify.register(mysql, {
+		await fastify.register(mysql, {
 			name,
 			host:		database.host,
 			user:		database.user,

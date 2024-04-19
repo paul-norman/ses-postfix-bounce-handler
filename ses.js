@@ -225,7 +225,7 @@ export default class SES {
 
 	async query(connection_name, table, data) {
 		if ('pg' in this._fastify && connection_name in this._fastify.pg) {
-			if (connection_name in this._connections) {
+			if (!(connection_name in this._connections)) {
 				this._connections[connection_name] = await this._fastify.pg[connection_name].connect();
 			}
 
@@ -241,11 +241,11 @@ export default class SES {
 				i++;
 			}
 
-			const sql = `INSERT INTO "` + table + `" (` + fields.join(', ') + `) VALUES (` + placeholders.join(', ') + `)`;
+			const sql = `INSERT INTO "` + table + `" (` + fields.join(', ') + `) VALUES (` + placeholders.join(', ') + `) ON CONFLICT DO NOTHING`;
 
 			return await this._connections[connection_name].query(sql, params);
 		} else if ('mysql' in this._fastify && connection_name in this._fastify.mysql) {
-			if (connection_name in this._connections) {
+			if (!(connection_name in this._connections)) {
 				this._connections[connection_name] = await this._fastify.mysql[connection_name].getConnection();
 			}
 
@@ -259,7 +259,7 @@ export default class SES {
 				placeholders.push('?');
 			}
 
-			const sql = "INSERT INTO `" + table + "` (" + fields.join(', ') + ") VALUES (" + placeholders.join(', ') + ")";
+			const sql = "INSERT IGNORE INTO `" + table + "` (" + fields.join(', ') + ") VALUES (" + placeholders.join(', ') + ")";
 
 			return await this._connections[connection_name].query(sql, params);
 		}
